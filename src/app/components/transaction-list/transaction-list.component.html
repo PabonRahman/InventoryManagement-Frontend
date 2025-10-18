@@ -1,0 +1,32 @@
+<h2>Transactions</h2>
+<a routerLink="/transactions/new" class="btn btn-primary mb-2">Add Transaction</a>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Store</th>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let txn of transactions">
+      <td>{{ txn.store.name }}</td>
+      <td>{{ txn.product.name }}</td>
+      <td>{{ txn.quantity }}</td>
+      <td>{{ txn.price }}</td>
+      <td>{{ txn.type }}</td>
+      <td>{{ txn.transactionDate | date:'short' }}</td>
+      <td>{{ txn.description }}</td>
+      <td>
+        <!-- Edit optional, you can implement edit later -->
+        <button class="btn btn-sm btn-danger" (click)="deleteTransaction(txn.id!)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,50 @@
+<div class="container mt-4">
+  <h3>{{ isEditMode ? 'Edit Purchase' : 'New Purchase' }}</h3>
+  <form (ngSubmit)="savePurchase()" *ngIf="!loading; else loadingTemplate">
+    <div class="mb-3">
+      <label for="product" class="form-label">Product *</label>
+      <select id="product" class="form-select" [(ngModel)]="purchase.product" name="product" required>
+        <option [ngValue]="null" disabled>Select a product</option>
+        <option *ngFor="let product of products" [ngValue]="product">{{ product.name }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="supplier" class="form-label">Supplier *</label>
+      <select id="supplier" class="form-select" [(ngModel)]="purchase.supplier" name="supplier" required>
+        <option [ngValue]="null" disabled>Select a supplier</option>
+        <option *ngFor="let supplier of suppliers" [ngValue]="supplier">{{ supplier.name }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="quantity" class="form-label">Quantity *</label>
+      <input type="number" id="quantity" class="form-control" [(ngModel)]="purchase.quantity" name="quantity" min="0" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Price per unit *</label>
+      <input type="number" id="price" class="form-control" [(ngModel)]="purchase.price" name="price" min="0" step="0.01" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="purchaseDate" class="form-label">Purchase Date *</label>
+      <input type="date" id="purchaseDate" class="form-control" [(ngModel)]="purchase.purchaseDate" name="purchaseDate" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea id="description" class="form-control" [(ngModel)]="purchase.description" name="description" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">{{ isEditMode ? 'Update' : 'Create' }}</button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="cancel()">Cancel</button>
+  </form>
+
+  <ng-template #loadingTemplate>
+    <div class="text-center py-4">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2">{{ isEditMode ? 'Loading purchase...' : 'Processing...' }}</p>
+    </div>
+  </ng-template>
+</div>

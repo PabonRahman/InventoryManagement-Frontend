@@ -1,0 +1,45 @@
+<h2>Add Transaction</h2>
+
+<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label for="store" class="form-label">Store</label>
+    <select id="store" formControlName="storeId" class="form-select">
+      <option value="" disabled>Select Store</option>
+      <option *ngFor="let store of stores" [value]="store.id">{{ store.name }}</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="product" class="form-label">Product</label>
+    <select id="product" formControlName="productId" class="form-select">
+      <option value="" disabled>Select Product</option>
+      <option *ngFor="let product of products" [value]="product.id">{{ product.name }}</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="quantity" class="form-label">Quantity</label>
+    <input id="quantity" type="number" formControlName="quantity" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label for="price" class="form-label">Price per unit</label>
+    <input id="price" type="number" formControlName="price" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label for="type" class="form-label">Transaction Type</label>
+    <select id="type" formControlName="type" class="form-select">
+      <option value="" disabled>Select Type</option>
+      <option *ngFor="let t of transactionTypes" [value]="t">{{ t }}</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea id="description" formControlName="description" class="form-control"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-success me-2">Submit</button>
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+</form>

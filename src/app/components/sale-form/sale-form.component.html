@@ -1,0 +1,61 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h4>{{ isEditMode ? 'Edit Sale' : 'Record New Sale' }}</h4>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="saveSale()" *ngIf="!loading; else loadingTemplate">
+
+        <!-- Product Selection -->
+        <div class="mb-3">
+          <label for="product" class="form-label">Product *</label>
+          <select class="form-select" [(ngModel)]="sale.product" name="product" required>
+            <option [ngValue]="null" disabled>Select a product</option>
+            <option *ngFor="let product of products" [ngValue]="product">
+              {{ product.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Quantity -->
+        <div class="mb-3">
+          <label for="quantity" class="form-label">Quantity *</label>
+          <input type="number" class="form-control" [(ngModel)]="sale.quantity" name="quantity" min="1" required>
+        </div>
+
+        <!-- Price -->
+        <div class="mb-3">
+          <label for="price" class="form-label">Price per Unit ($) *</label>
+          <input type="number" class="form-control" [(ngModel)]="sale.price" name="price" min="0" step="0.01" required>
+        </div>
+
+        <!-- Sale Date -->
+        <div class="mb-3">
+          <label for="saleDate" class="form-label">Sale Date *</label>
+          <input type="date" class="form-control" [(ngModel)]="sale.saleDate" name="saleDate" required>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" [(ngModel)]="sale.description" name="description" rows="3"></textarea>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex gap-2 mt-3">
+          <button type="submit" class="btn btn-success">
+            {{ isEditMode ? 'Update Sale' : 'Record Sale' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
+
+      <ng-template #loadingTemplate>
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 mb-0">{{ isEditMode ? 'Loading sale...' : 'Saving sale...' }}</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

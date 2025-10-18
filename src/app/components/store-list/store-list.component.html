@@ -1,0 +1,23 @@
+<h2>Stores</h2>
+<a routerLink="/stores/new" class="btn btn-primary mb-2">Add Store</a>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Contact</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let store of stores">
+      <td>{{store.name}}</td>
+      <td>{{store.address}}</td>
+      <td>{{store.contactNumber}}</td>
+      <td>
+        <a [routerLink]="['/stores/edit', store.id]" class="btn btn-sm btn-info">Edit</a>
+        <button class="btn btn-sm btn-danger" (click)="deleteStore(store.id!)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

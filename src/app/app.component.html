@@ -1,0 +1,42 @@
+<!-- app.component.html -->
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav class="sidebar bg-dark text-white vh-100 p-3">
+    <h4 class="text-center mb-4">Inventory System</h4>
+    <ul class="nav flex-column">
+      <!-- Products -->
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/products" routerLinkActive="active">🛒 Products</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/categories" routerLinkActive="active">📂 Categories</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/suppliers" routerLinkActive="active">🚚 Suppliers</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/purchases" routerLinkActive="active">💰 Purchases</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/sales" routerLinkActive="active">📈 Sales</a>
+      </li>
+
+      <!-- New Modules -->
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/stores" routerLinkActive="active">🏬 Stores</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/inventories" routerLinkActive="active">📦 Inventory</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" routerLink="/transactions" routerLinkActive="active">💳 Transactions</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content flex-grow-1 p-4">
+    <router-outlet></router-outlet>
+  </div>
+</div>

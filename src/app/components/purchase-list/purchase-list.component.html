@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Purchase List</h3>
+    <button class="btn btn-primary" routerLink="/purchases/new">
+      <i class="fas fa-plus me-1"></i>New Purchase
+    </button>
+  </div>
+
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Product</th>
+          <th>Supplier</th>
+          <th>Quantity</th>
+          <th>Price per unit</th>
+          <th>Total</th>
+          <th>Purchase Date</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let purchase of purchases; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ purchase.product.name }}</td>
+          <td>{{ purchase.supplier.name }}</td>
+          <td>{{ purchase.quantity }}</td>
+          <td>{{ purchase.price | currency }}</td>
+          <td>{{ (purchase.quantity * purchase.price) | currency }}</td>
+          <td>{{ formatDate(purchase.purchaseDate) }}</td>
+          <td>{{ purchase.description || '-' }}</td>
+          <td>
+            <button class="btn btn-sm btn-warning me-1" (click)="editPurchase(purchase.id!)">
+              <i class="fas fa-edit"></i>Edit
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deletePurchase(purchase.id!)">
+              <i class="fas fa-trash"></i>Delete
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="purchases.length === 0">
+          <td colspan="9" class="text-center text-muted">No purchases found</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <ng-template #loadingTemplate>
+    <div class="text-center py-4">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2">Loading purchases...</p>
+    </div>
+  </ng-template>
+</div>
