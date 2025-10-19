@@ -41,17 +41,51 @@ export class TransactionFormComponent implements OnInit {
     this.productService.getProducts().subscribe(data => this.products = data);
   }
 
+
   onSubmit() {
-    if (this.transactionForm.invalid) return;
+  if (this.transactionForm.invalid) return;
 
-    const { storeId, productId, quantity, price, type, description } = this.transactionForm.value;
+  const { storeId, productId, quantity, price, type, description } = this.transactionForm.value;
 
-    this.transactionService.createTransaction(storeId, productId, quantity, price, type, description)
-      .subscribe(() => {
+  this.transactionService.createTransaction(storeId, productId, quantity, price, type, description)
+    .subscribe({
+      next: () => {
         alert('Transaction created successfully');
         this.router.navigate(['/transactions']);
-      });
-  }
+      },
+      error: (err) => {
+        console.error('Error:', err);
+
+        // Try to extract readable message from backend response
+        let errorMessage = 'Something went wrong! Please try again.';
+
+        if (err.error) {
+          if (typeof err.error === 'string') {
+            errorMessage = err.error;
+          } else if (err.error.error) {
+            // From your backend GlobalExceptionHandler: { error: "Inventory not found..." }
+            errorMessage = err.error.error;
+          } else if (err.error.message) {
+            errorMessage = err.error.message;
+          }
+        }
+
+        alert(errorMessage);
+      }
+    });
+}
+
+  // onSubmit() {
+  //   if (this.transactionForm.invalid) return;
+
+  //   const { storeId, productId, quantity, price, type, description } = this.transactionForm.value;
+
+  //   this.transactionService.createTransaction(storeId, productId, quantity, price, type, description)
+  //     .subscribe(() => {
+  //       alert('Transaction created successfully');
+  //       this.router.navigate(['/transactions']);
+  //     });
+  // }
 
   onCancel() {
     this.router.navigate(['/transactions']);
