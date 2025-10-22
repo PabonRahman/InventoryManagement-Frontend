@@ -1,0 +1,198 @@
+<div class="moderator-dashboard">
+  <div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="dashboard-header">
+          <h1 class="h2 mb-2">
+            <i class="fas fa-user-shield me-2 text-info"></i>Moderator Dashboard
+          </h1>
+          <p class="text-muted mb-0">
+            Welcome, <strong>{{ currentUser?.username }}</strong>. Manage content and suppliers.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-warning">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.pendingApprovals }}</div>
+            <div class="stat-label">Pending Approvals</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-icon">
+            <i class="fas fa-box"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ formatNumber(stats.totalProducts) }}</div>
+            <div class="stat-label">Total Products</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-success">
+          <div class="stat-icon">
+            <i class="fas fa-truck"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.activeSuppliers }}</div>
+            <div class="stat-label">Active Suppliers</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-danger">
+          <div class="stat-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.inventoryAlerts }}</div>
+            <div class="stat-label">Inventory Alerts</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-info">
+          <div class="stat-icon">
+            <i class="fas fa-tags"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.categories }}</div>
+            <div class="stat-label">Categories</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-secondary">
+          <div class="stat-icon">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.todaySales }}</div>
+            <div class="stat-label">Today's Sales</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-lg-8">
+        <!-- Pending Tasks -->
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-tasks me-2 text-warning"></i>Pending Approval Tasks</h5>
+            <span class="badge bg-warning">{{ pendingTasks.length }} pending</span>
+          </div>
+          <div class="card-body">
+            <div class="tasks-list">
+              <div *ngFor="let task of pendingTasks" class="task-item">
+                <div class="task-priority">
+                  <i class="fas" [class]="getPriorityIcon(task.priority) + ' text-' + getPriorityClass(task.priority)"></i>
+                </div>
+                <div class="task-content">
+                  <div class="task-header">
+                    <h6 class="task-title">{{ task.title }}</h6>
+                    <span class="badge" [class]="'bg-' + getPriorityClass(task.priority)">{{ task.priority }}</span>
+                  </div>
+                  <div class="task-meta">
+                    <span class="task-type">{{ task.type }}</span> • 
+                    <span class="task-user">By {{ task.user }}</span> • 
+                    <span class="task-time">{{ task.time }}</span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button class="btn btn-success btn-sm" (click)="approveTask(task.id)">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm" (click)="rejectTask(task.id)">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="pendingTasks.length === 0" class="text-center py-4">
+              <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+              <p class="text-muted mb-0">No pending tasks. Great job!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-bolt me-2 text-success"></i>Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3 col-6" *ngFor="let action of quickActions">
+                <a [routerLink]="action.link" class="quick-action-card text-decoration-none">
+                  <div class="action-icon" [class]="'bg-' + action.color">
+                    <i class="fas" [class]="action.icon"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6 class="action-title">{{ action.title }}</h6>
+                    <p class="action-description">{{ action.description }}</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-lg-4">
+        <!-- Recent Moderations -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-history me-2 text-primary"></i>Recent Moderations</h5>
+          </div>
+          <div class="card-body">
+            <div class="moderation-feed">
+              <div *ngFor="let mod of recentModerations" class="moderation-item">
+                <div class="moderation-icon bg-light">
+                  <i class="fas fa-edit text-primary"></i>
+                </div>
+                <div class="moderation-content">
+                  <div class="moderation-text">
+                    <strong>{{ mod.action }}</strong> - {{ mod.item }}
+                  </div>
+                  <div class="moderation-meta">
+                    <span class="moderation-user">By {{ mod.user }}</span> • 
+                    <span class="moderation-time">{{ mod.time }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Moderator Guidelines -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-book me-2 text-info"></i>Moderator Guidelines</h5>
+          </div>
+          <div class="card-body">
+            <ul class="guidelines-list">
+              <li>Verify supplier credentials before approval</li>
+              <li>Check product images and descriptions</li>
+              <li>Ensure categories are properly organized</li>
+              <li>Monitor inventory levels regularly</li>
+              <li>Respond to user reports promptly</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

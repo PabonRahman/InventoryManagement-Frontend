@@ -1,0 +1,155 @@
+.moderator-dashboard {
+  padding: 20px 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: calc(100vh - 76px);
+}
+
+/* Tasks List */
+.tasks-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.task-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.task-item:last-child {
+  margin-bottom: 0;
+}
+
+.task-priority {
+  width: 40px;
+  text-align: center;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+}
+
+.task-content {
+  flex: 1;
+}
+
+.task-header {
+  display: flex;
+  justify-content: between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.task-title {
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.task-meta {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.task-type {
+  font-weight: 500;
+  color: #667eea;
+}
+
+.task-user {
+  font-weight: 500;
+}
+
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.task-actions .btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+/* Moderation Feed */
+.moderation-feed {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.moderation-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.moderation-item:last-child {
+  border-bottom: none;
+}
+
+.moderation-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.moderation-content {
+  flex: 1;
+}
+
+.moderation-text {
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.moderation-meta {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* Guidelines List */
+.guidelines-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.guidelines-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f8f9fa;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.guidelines-list li:before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.guidelines-list li:last-child {
+  border-bottom: none;
+}
+
+/* Inherit styles from admin dashboard */

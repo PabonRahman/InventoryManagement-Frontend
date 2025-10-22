@@ -1,0 +1,202 @@
+<p>admin-board works!</p>
+<div class="admin-dashboard">
+  <div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="dashboard-header">
+          <h1 class="h2 mb-2">
+            <i class="fas fa-crown me-2 text-warning"></i>Administrator Dashboard
+          </h1>
+          <p class="text-muted mb-0">
+            Welcome back, <strong>{{ currentUser?.username }}</strong>. You have full system access.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ formatNumber(stats.totalUsers) }}</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-success">
+          <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ formatNumber(stats.activeUsers) }}</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-info">
+          <div class="stat-icon">
+            <i class="fas fa-boxes"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ formatNumber(stats.totalProducts) }}</div>
+            <div class="stat-label">Products</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-warning">
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ formatNumber(stats.totalSales) }}</div>
+            <div class="stat-label">Total Sales</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-danger">
+          <div class="stat-icon">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ formatCurrency(stats.revenue) }}</div>
+            <div class="stat-label">Revenue</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-4 col-6 mb-3">
+        <div class="stat-card stat-card-secondary">
+          <div class="stat-icon">
+            <i class="fas fa-tasks"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ stats.pendingTasks }}</div>
+            <div class="stat-label">Pending Tasks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-lg-8">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3 col-6" *ngFor="let action of quickActions">
+                <a [routerLink]="action.link" class="quick-action-card text-decoration-none">
+                  <div class="action-icon" [class]="'bg-' + action.color">
+                    <i class="fas" [class]="action.icon"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6 class="action-title">{{ action.title }}</h6>
+                    <p class="action-description">{{ action.description }}</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Health -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-heartbeat me-2 text-danger"></i>System Health</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-4">
+              <div class="col-md-3 col-6" *ngFor="let metric of systemHealth | keyvalue">
+                <div class="health-metric">
+                  <div class="health-header">
+                    <span class="health-label">{{ metric.key | titlecase }}</span>
+                    <i class="fas" [class]="getSystemHealthIcon(metric.value) + ' text-' + getSystemHealthClass(metric.value)"></i>
+                  </div>
+                  <div class="health-progress">
+                    <div class="progress">
+                      <div class="progress-bar" 
+                           [class]="'bg-' + getSystemHealthClass(metric.value)"
+                           [style.width]="metric.value + '%'">
+                        <span class="progress-text">{{ metric.value }}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-lg-4">
+        <!-- Recent Activities -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-history me-2 text-primary"></i>Recent Activities</h5>
+          </div>
+          <div class="card-body">
+            <div class="activity-feed">
+              <div *ngFor="let activity of recentActivities" class="activity-item">
+                <div class="activity-icon" [class]="'bg-' + activity.type">
+                  <i class="fas" [class]="activity.type === 'success' ? 'fa-check' : activity.type === 'danger' ? 'fa-times' : activity.type === 'warning' ? 'fa-exclamation' : 'fa-info'"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-text">
+                    <strong>{{ activity.user }}</strong> {{ activity.action }}
+                  </div>
+                  <div class="activity-time text-muted">
+                    {{ activity.time }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center mt-3">
+              <button class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-list me-1"></i>View All Activities
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Info -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-info-circle me-2 text-info"></i>System Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="system-info">
+              <div class="info-item">
+                <span class="info-label">System Version:</span>
+                <span class="info-value">v2.4.1</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Last Backup:</span>
+                <span class="info-value">Today, 02:30 AM</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Uptime:</span>
+                <span class="info-value">15 days, 4 hours</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Database Size:</span>
+                <span class="info-value">245 MB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

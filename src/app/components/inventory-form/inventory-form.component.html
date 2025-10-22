@@ -1,0 +1,32 @@
+<h2>{{ isEditMode ? 'Edit Inventory' : 'Add Inventory' }}</h2>
+
+<form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label for="store" class="form-label">Store</label>
+    <select id="store" formControlName="storeId" class="form-select">
+      <option value="" disabled>Select Store</option>
+      <option *ngFor="let store of stores" [value]="store.id">{{ store.name }}</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="product" class="form-label">Product</label>
+    <select id="product" formControlName="productId" class="form-select">
+      <option value="" disabled>Select Product</option>
+      <option *ngFor="let product of products" [value]="product.id">{{ product.name }}</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="quantity" class="form-label">Quantity</label>
+    <input id="quantity" type="number" formControlName="quantity" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label for="costPrice" class="form-label">Cost Price</label>
+    <input id="costPrice" type="number" formControlName="costPrice" class="form-control">
+  </div>
+
+  <button type="submit" class="btn btn-success me-2">{{ isEditMode ? 'Update' : 'Add' }}</button>
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+</form>

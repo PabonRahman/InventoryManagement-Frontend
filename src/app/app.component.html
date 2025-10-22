@@ -1,0 +1,195 @@
+<div class="d-flex">
+  <!-- Sidebar - Only show when logged in -->
+  <nav class="sidebar bg-dark text-white vh-100 p-3" *ngIf="isLoggedIn">
+    <div class="text-center mb-4">
+      <h4 class="mb-1">🏬 Inventory System</h4>
+      <small class="text-muted" *ngIf="username">Welcome, {{ username }}</small>
+      <div class="mt-2">
+        <span *ngFor="let role of roles" class="badge bg-primary me-1 badge-sm">
+          {{ role.replace('ROLE_', '') }}
+        </span>
+      </div>
+    </div>
+    
+    <ul class="nav flex-column">
+      
+      <!-- Dashboard -->
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('dashboard')"
+           routerLink="/user-dashboard">
+          📊 Dashboard
+        </a>
+      </li>
+
+      <!-- Products & Catalog -->
+      <li class="nav-section-header">Products & Catalog</li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('products') && !isActiveRoute('products/new') && !isActiveRoute('products/edit')"
+           routerLink="/products">
+          🛒 Products
+        </a>
+      </li>
+      <li class="nav-item mb-2" *ngIf="hasAnyRole(['ROLE_MODERATOR', 'ROLE_ADMIN'])">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('products/new')"
+           routerLink="/products/new">
+          ➕ Add Product
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('categories') && !isActiveRoute('categories/new') && !isActiveRoute('categories/edit')"
+           routerLink="/categories">
+          📂 Categories
+        </a>
+      </li>
+      <li class="nav-item mb-2" *ngIf="hasAnyRole(['ROLE_MODERATOR', 'ROLE_ADMIN'])">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('categories/new')"
+           routerLink="/categories/new">
+          ➕ Add Category
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('suppliers') && !isActiveRoute('suppliers/new') && !isActiveRoute('suppliers/edit')"
+           routerLink="/suppliers">
+          🚚 Suppliers
+        </a>
+      </li>
+      <li class="nav-item mb-2" *ngIf="hasAnyRole(['ROLE_MODERATOR', 'ROLE_ADMIN'])">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('suppliers/new')"
+           routerLink="/suppliers/new">
+          ➕ Add Supplier
+        </a>
+      </li>
+
+      <!-- Operations -->
+      <li class="nav-section-header">Operations</li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('purchases') && !isActiveRoute('purchases/new') && !isActiveRoute('purchases/edit')"
+           routerLink="/purchases">
+          💰 Purchases
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('purchases/new')"
+           routerLink="/purchases/new">
+          ➕ New Purchase
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('sales') && !isActiveRoute('sales/new') && !isActiveRoute('sales/edit')"
+           routerLink="/sales">
+          📈 Sales
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('sales/new')"
+           routerLink="/sales/new">
+          ➕ New Sale
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('transactions')"
+           routerLink="/transactions">
+          💳 Transactions
+        </a>
+      </li>
+
+      <!-- Inventory Management -->
+      <li class="nav-section-header">Inventory</li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('inventories') && !isActiveRoute('inventories/new') && !isActiveRoute('inventories/edit')"
+           routerLink="/inventories">
+          📦 Inventory
+        </a>
+      </li>
+      <li class="nav-item mb-2" *ngIf="hasAnyRole(['ROLE_MODERATOR', 'ROLE_ADMIN'])">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('inventories/new')"
+           routerLink="/inventories/new">
+          ➕ Add Inventory
+        </a>
+      </li>
+      
+      <!-- Admin Only Sections -->
+      <li class="nav-item mb-2" *ngIf="hasAnyRole(['ROLE_MODERATOR', 'ROLE_ADMIN'])">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('stores')"
+           routerLink="/stores">
+          🏬 Stores
+        </a>
+      </li>
+
+      <!-- Administration -->
+      <li class="nav-section-header" *ngIf="hasAnyRole(['ROLE_MODERATOR', 'ROLE_ADMIN'])">
+        Administration
+      </li>
+      <li class="nav-item mb-2" *ngIf="hasRole('ROLE_MODERATOR')">
+        <a class="nav-link text-warning" 
+           [class.active]="isActiveRoute('mod-dashboard')"
+           routerLink="/mod-dashboard">
+          ⚙️ Moderator Panel
+        </a>
+      </li>
+      <li class="nav-item mb-2" *ngIf="hasRole('ROLE_ADMIN')">
+        <a class="nav-link text-danger" 
+           [class.active]="isActiveRoute('admin-dashboard')"
+           routerLink="/admin-dashboard">
+          🔧 Admin Panel
+        </a>
+      </li>
+
+      <!-- User -->
+      <li class="nav-section-header">User</li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-white" 
+           [class.active]="isActiveRoute('profile')"
+           routerLink="/profile">
+          👤 Profile
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link text-danger" (click)="logout()" style="cursor: pointer;">
+          🚪 Logout
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content flex-grow-1" [class.content-full]="!isLoggedIn">
+    
+    <!-- Navbar for when user is not logged in -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm" *ngIf="!isLoggedIn">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">
+          <i class="fas fa-warehouse me-2"></i>Inventory Management System
+        </span>
+        <div class="navbar-nav flex-row">
+          <a class="nav-link text-white me-3" routerLink="/login">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+          </a>
+          <a class="nav-link text-white" routerLink="/register">
+            <i class="fas fa-user-plus me-1"></i>Register
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Router content -->
+    <div class="p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

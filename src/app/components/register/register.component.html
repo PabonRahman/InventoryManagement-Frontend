@@ -1,0 +1,305 @@
+<div class="register-container">
+  <div class="register-background"></div>
+  
+  <div class="container-fluid h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+        <!-- Register Card -->
+        <div class="card register-card shadow-lg animate__animated animate__fadeIn">
+          <div class="card-header register-header text-center py-4">
+            <div class="register-logo mb-3">
+              <i class="fas fa-user-plus fa-3x text-white"></i>
+            </div>
+            <h1 class="h3 mb-0 text-white">Create Account</h1>
+            <p class="text-white-50 mb-0">Join our inventory management system</p>
+          </div>
+
+          <div class="card-body p-4 p-md-5">
+            <!-- Registration Form -->
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+              
+              <!-- Username Field -->
+              <div class="mb-4">
+                <label for="username" class="form-label">
+                  <i class="fas fa-user me-2 text-primary"></i>Username
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light">
+                    <i class="fas fa-user text-muted"></i>
+                  </span>
+                  <input
+                    type="text"
+                    id="username"
+                    formControlName="username"
+                    class="form-control"
+                    [ngClass]="{ 
+                      'is-invalid': submitted && f['username'].errors,
+                      'is-valid': submitted && !f['username'].errors 
+                    }"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                  />
+                </div>
+                <div *ngIf="submitted && f['username'].errors" class="invalid-feedback d-block">
+                  <div *ngIf="f['username'].errors['required']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Username is required
+                  </div>
+                  <div *ngIf="f['username'].errors['minlength']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Username must be at least 3 characters
+                  </div>
+                  <div *ngIf="f['username'].errors['maxlength']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Username cannot exceed 20 characters
+                  </div>
+                  <div *ngIf="f['username'].errors['pattern']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Username can only contain letters, numbers, and underscores
+                  </div>
+                </div>
+                <div *ngIf="!f['username'].errors" class="form-text">
+                  <i class="fas fa-info-circle me-1"></i>3-20 characters, letters, numbers, and underscores only
+                </div>
+              </div>
+
+              <!-- Email Field -->
+              <div class="mb-4">
+                <label for="email" class="form-label">
+                  <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light">
+                    <i class="fas fa-envelope text-muted"></i>
+                  </span>
+                  <input
+                    type="email"
+                    id="email"
+                    formControlName="email"
+                    class="form-control"
+                    [ngClass]="{ 
+                      'is-invalid': submitted && f['email'].errors,
+                      'is-valid': submitted && !f['email'].errors 
+                    }"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                  />
+                </div>
+                <div *ngIf="submitted && f['email'].errors" class="invalid-feedback d-block">
+                  <div *ngIf="f['email'].errors['required']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Email is required
+                  </div>
+                  <div *ngIf="f['email'].errors['email']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Please enter a valid email address
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password Field -->
+              <div class="mb-4">
+                <label for="password" class="form-label">
+                  <i class="fas fa-lock me-2 text-primary"></i>Password
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light">
+                    <i class="fas fa-lock text-muted"></i>
+                  </span>
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    id="password"
+                    formControlName="password"
+                    class="form-control"
+                    [ngClass]="{ 
+                      'is-invalid': submitted && f['password'].errors,
+                      'is-valid': submitted && !f['password'].errors 
+                    }"
+                    placeholder="Create a strong password"
+                    autocomplete="new-password"
+                  />
+                  <button class="btn btn-outline-secondary" 
+                          type="button" 
+                          (click)="togglePasswordVisibility('password')"
+                          title="{{ showPassword ? 'Hide password' : 'Show password' }}">
+                    <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+                  </button>
+                </div>
+                
+                <!-- Password Strength Indicator -->
+                <div *ngIf="f['password'].value" class="password-strength mt-2">
+                  <div class="strength-bar">
+                    <div class="strength-fill" [class]="getPasswordStrengthClass()"></div>
+                  </div>
+                  <small class="strength-text" [class]="getPasswordStrengthClass()">
+                    Password strength: {{ getPasswordStrengthText() }}
+                  </small>
+                </div>
+
+                <div *ngIf="submitted && f['password'].errors" class="invalid-feedback d-block">
+                  <div *ngIf="f['password'].errors['required']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Password is required
+                  </div>
+                  <div *ngIf="f['password'].errors['minlength']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Password must be at least 6 characters
+                  </div>
+                  <div *ngIf="f['password'].errors['passwordWeak']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Password is too weak. Include uppercase, lowercase, numbers, or special characters
+                  </div>
+                </div>
+                <div *ngIf="!f['password'].errors" class="form-text">
+                  <i class="fas fa-info-circle me-1"></i>Minimum 6 characters with mix of character types
+                </div>
+              </div>
+
+              <!-- Confirm Password Field -->
+              <div class="mb-4">
+                <label for="confirmPassword" class="form-label">
+                  <i class="fas fa-lock me-2 text-primary"></i>Confirm Password
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light">
+                    <i class="fas fa-lock text-muted"></i>
+                  </span>
+                  <input
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    class="form-control"
+                    [ngClass]="{ 
+                      'is-invalid': submitted && f['confirmPassword'].errors,
+                      'is-valid': submitted && !f['confirmPassword'].errors 
+                    }"
+                    placeholder="Confirm your password"
+                    autocomplete="new-password"
+                  />
+                  <button class="btn btn-outline-secondary" 
+                          type="button" 
+                          (click)="togglePasswordVisibility('confirmPassword')"
+                          title="{{ showConfirmPassword ? 'Hide password' : 'Show password' }}">
+                    <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+                  </button>
+                </div>
+                <div *ngIf="submitted && f['confirmPassword'].errors" class="invalid-feedback d-block">
+                  <div *ngIf="f['confirmPassword'].errors['required']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Please confirm your password
+                  </div>
+                  <div *ngIf="f['confirmPassword'].errors['mustMatch']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Passwords do not match
+                  </div>
+                </div>
+              </div>
+
+              <!-- Role Selection -->
+              <div class="mb-4">
+                <label class="form-label">
+                  <i class="fas fa-user-tag me-2 text-primary"></i>Account Type
+                </label>
+                <div class="roles-selection">
+                  <div *ngFor="let role of roles" 
+                       class="role-card" 
+                       [class.selected]="isRoleSelected(role.value)"
+                       (click)="toggleRole(role.value)">
+                    <div class="role-header">
+                      <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               [checked]="isRoleSelected(role.value)"
+                               (change)="toggleRole(role.value)"
+                               [id]="'role-' + role.value">
+                        <label class="form-check-label fw-bold" [for]="'role-' + role.value">
+                          {{ role.label }}
+                        </label>
+                      </div>
+                    </div>
+                    <div class="role-description">
+                      <small class="text-muted">{{ role.description }}</small>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="submitted && f['roles'].errors" class="invalid-feedback d-block">
+                  <div *ngIf="f['roles'].errors['required']">
+                    <i class="fas fa-exclamation-circle me-1"></i>Please select at least one role
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid gap-2 mb-4">
+                <button 
+                  type="submit" 
+                  class="btn btn-success btn-lg"
+                  [disabled]="loading"
+                  [class.btn-loading]="loading">
+                  
+                  <span *ngIf="!loading">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                  </span>
+                  
+                  <span *ngIf="loading">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Creating Account...
+                  </span>
+                </button>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="row g-2 mb-4">
+                <div class="col-6">
+                  <button type="button" 
+                          class="btn btn-outline-secondary w-100"
+                          (click)="resetForm()"
+                          [disabled]="loading">
+                    <i class="fas fa-redo me-2"></i>Reset
+                  </button>
+                </div>
+                <div class="col-6">
+                  <a routerLink="/login" 
+                     class="btn btn-outline-primary w-100"
+                     [class.disabled]="loading">
+                    <i class="fas fa-sign-in-alt me-2"></i>Back to Login
+                  </a>
+                </div>
+              </div>
+
+              <!-- Success Message -->
+              <div *ngIf="success" class="alert alert-success animate__animated animate__fadeIn" role="alert">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-check-circle me-2"></i>
+                  <div>{{ success }}</div>
+                </div>
+              </div>
+
+              <!-- Error Message -->
+              <div *ngIf="error" class="alert alert-danger animate__animated animate__shakeX" role="alert">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  <div>{{ error }}</div>
+                </div>
+              </div>
+
+            </form>
+
+            <!-- Additional Info -->
+            <div class="text-center mt-4">
+              <p class="mb-3 text-muted">
+                <i class="fas fa-shield-alt me-2"></i>
+                Your data is secure and encrypted
+              </p>
+              
+              <div class="mt-4">
+                <small class="text-muted">
+                  By creating an account, you agree to our 
+                  <a href="#" class="text-decoration-none">Terms of Service</a> 
+                  and 
+                  <a href="#" class="text-decoration-none">Privacy Policy</a>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-4">
+          <small class="text-muted">
+            &copy; 2024 Inventory Management System. All rights reserved.
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

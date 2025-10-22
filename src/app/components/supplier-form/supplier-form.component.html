@@ -1,0 +1,84 @@
+<div class="container mt-4">
+  <h2>{{ isEditMode ? 'Edit' : 'Create' }} Supplier</h2>
+  
+  <form (ngSubmit)="saveSupplier()" #supplierForm="ngForm">
+    
+    <!-- Name -->
+    <div class="form-group mb-3">
+      <label for="name" class="form-label">Supplier Name *</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="name" 
+        name="name" 
+        [(ngModel)]="supplier.name" 
+        required
+        [disabled]="loading"
+        placeholder="Enter supplier name">
+      <div class="form-text">Supplier name is required</div>
+    </div>
+
+    <!-- Contact Email -->
+    <div class="form-group mb-3">
+      <label for="contactEmail" class="form-label">Contact Email</label>
+      <input 
+        type="email" 
+        class="form-control" 
+        id="contactEmail" 
+        name="contactEmail" 
+        [(ngModel)]="supplier.contactEmail"
+        [disabled]="loading"
+        placeholder="Enter contact email">
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group mb-3">
+      <label for="phone" class="form-label">Phone Number</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="phone" 
+        name="phone" 
+        [(ngModel)]="supplier.phone"
+        [disabled]="loading"
+        placeholder="Enter phone number">
+    </div>
+
+    <!-- Address -->
+    <div class="form-group mb-3">
+      <label for="address" class="form-label">Address</label>
+      <textarea 
+        class="form-control" 
+        id="address" 
+        name="address" 
+        [(ngModel)]="supplier.address"
+        rows="3"
+        [disabled]="loading"
+        placeholder="Enter supplier address"></textarea>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      <strong>Error:</strong> {{ errorMessage }}
+    </div>
+
+    <!-- Buttons -->
+    <div class="d-flex gap-2">
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="loading || !supplier.name">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }} Supplier
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="cancel()"
+        [disabled]="loading">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

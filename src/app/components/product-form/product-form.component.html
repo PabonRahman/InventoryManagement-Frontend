@@ -1,0 +1,88 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h4>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="saveProduct()" *ngIf="!loading; else loadingTemplate">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Product Name *</label>
+                  <input type="text" class="form-control" [(ngModel)]="product.name" name="name" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" [(ngModel)]="product.description" name="description" rows="4"></textarea>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Price *</label>
+                      <input type="number" class="form-control" [(ngModel)]="product.price" name="price" step="0.01" min="0" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Quantity *</label>
+                      <input type="number" class="form-control" [(ngModel)]="product.quantity" name="quantity" min="0" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Category *</label>
+                  <select class="form-select" [(ngModel)]="product.category" name="category" required>
+                    <option [ngValue]="null" disabled>Select a category</option>
+                    <option *ngFor="let category of categories" [ngValue]="category">{{ category.name }}</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Supplier</label>
+                  <select class="form-select" [(ngModel)]="product.supplier" name="supplier">
+                    <option [ngValue]="null" disabled>Select a supplier</option>
+                    <option *ngFor="let supplier of suppliers" [ngValue]="supplier">
+                      {{ supplier.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Product Image</label>
+                  <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+                </div>
+                <div class="image-upload-area border rounded p-3 text-center">
+                  <div *ngIf="imagePreview || product.imageUrl; else noImageTemplate">
+                    <img [src]="imagePreview || ('http://localhost:8080' + product.imageUrl)" class="img-thumbnail preview-image">
+                    <button type="button" class="btn btn-danger btn-sm mt-2" (click)="removeImage()">Remove Image</button>
+                  </div>
+                  <ng-template #noImageTemplate>
+                    <div class="text-muted"><i class="fas fa-image fa-3x mb-2"></i><p>No image selected</p></div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+              <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+              <button type="submit" class="btn btn-success"
+                [disabled]="!product.name || !product.price || !product.quantity || !product.category">
+                {{ isEditMode ? 'Update' : 'Create' }} Product
+              </button>
+            </div>
+          </form>
+
+          <ng-template #loadingTemplate>
+            <div class="text-center py-4">
+              <div class="spinner-border text-primary"></div>
+              <p>{{ isEditMode ? 'Loading product data...' : 'Creating product...' }}</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

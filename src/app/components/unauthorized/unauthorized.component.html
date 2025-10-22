@@ -1,0 +1,102 @@
+<div class="unauthorized-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <!-- Error Card -->
+        <div class="error-card text-center">
+          <div class="error-icon">
+            <i class="fas fa-ban"></i>
+          </div>
+          
+          <h1 class="error-title">Access Denied</h1>
+          
+          <p class="error-description">
+            You don't have permission to access this page. 
+            <span *ngIf="requestedUrl">You tried to access: <code>{{ requestedUrl }}</code></span>
+          </p>
+
+          <!-- User Information -->
+          <div *ngIf="currentUser" class="user-info-card">
+            <div class="user-avatar">
+              <div class="avatar-circle bg-primary text-white">
+                {{ currentUser.username?.charAt(0).toUpperCase() }}
+              </div>
+            </div>
+            <div class="user-details">
+              <h6 class="mb-1">{{ currentUser.username }}</h6>
+              <div class="user-roles">
+                <span *ngFor="let role of getUserRoles()" 
+                      class="badge bg-secondary me-1">
+                  {{ getRoleDisplay(role) }}
+                </span>
+              </div>
+              <small class="text-muted">
+                {{ hasMultipleRoles() ? 'Your roles:' : 'Your role:' }}
+              </small>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn btn-primary btn-lg" (click)="goToDashboard()">
+              <i class="fas fa-tachometer-alt me-2"></i>
+              Go to My Dashboard
+            </button>
+            
+            <button class="btn btn-outline-secondary btn-lg" (click)="goHome()">
+              <i class="fas fa-home me-2"></i>
+              Back to Home
+            </button>
+            
+            <button class="btn btn-outline-info btn-lg" (click)="contactSupport()">
+              <i class="fas fa-life-ring me-2"></i>
+              Request Access
+            </button>
+          </div>
+
+          <!-- Additional Help -->
+          <div class="help-section">
+            <h6 class="help-title">Need Help?</h6>
+            <div class="help-options">
+              <div class="help-item">
+                <i class="fas fa-user-shield text-primary"></i>
+                <span>Contact your system administrator</span>
+              </div>
+              <div class="help-item">
+                <i class="fas fa-envelope text-info"></i>
+                <span>Email support@inventory.com</span>
+              </div>
+              <div class="help-item">
+                <i class="fas fa-phone text-success"></i>
+                <span>Call +1 (555) 123-4567</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="quick-links">
+            <h6 class="links-title">You might be looking for:</h6>
+            <div class="links-grid">
+              <a routerLink="/user-dashboard" class="link-item">
+                <i class="fas fa-user"></i>
+                <span>User Dashboard</span>
+              </a>
+              <a routerLink="/products" class="link-item">
+                <i class="fas fa-box"></i>
+                <span>Browse Products</span>
+              </a>
+              <a routerLink="/profile" class="link-item">
+                <i class="fas fa-cog"></i>
+                <span>Your Profile</span>
+              </a>
+              <a routerLink="/help" class="link-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help Center</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
