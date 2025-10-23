@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { Supplier } from '../models/supplier';
 
 @Injectable({
@@ -39,7 +39,10 @@ export class SupplierService {
 
   deleteSupplier(id: number): Observable<void> {
     console.log('🗑️ Deleting supplier ID:', id);
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete(`${this.apiUrl}/${id}`, {
+      responseType: 'text'
+    }).pipe(
+      map(() => undefined), // Convert text response to void
       catchError(this.handleError)
     );
   }
