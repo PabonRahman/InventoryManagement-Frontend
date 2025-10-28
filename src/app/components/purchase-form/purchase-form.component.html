@@ -1,0 +1,235 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-shopping-cart me-2"></i>
+            {{ isEditMode ? 'Edit Purchase' : 'Record New Purchase' }}
+          </h3>
+        </div>
+        
+        <div class="card-body">
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="clearError()"></button>
+          </div>
+
+          <form (ngSubmit)="savePurchase()" #purchaseForm="ngForm">
+            <!-- Product Selection -->
+            <div class="mb-3">
+              <label for="product" class="form-label">
+                Product <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="product"
+                [(ngModel)]="purchase.product"
+                name="product"
+                [compareWith]="compareProduct"
+                required
+                #product="ngModel"
+                [class.is-invalid]="product.invalid && (product.dirty || product.touched)">
+                <option [ngValue]="null" disabled>Select Product</option>
+                <option *ngFor="let product of products" [ngValue]="product">
+                  {{ product.name }} - Stock: {{ product.quantity }}
+                </option>
+              </select>
+              <div *ngIf="product.invalid && (product.dirty || product.touched)" class="invalid-feedback">
+                Please select a product
+              </div>
+            </div>
+
+            <!-- Supplier Selection -->
+            <div class="mb-3">
+              <label for="supplier" class="form-label">
+                Supplier <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="supplier"
+                [(ngModel)]="purchase.supplier"
+                name="supplier"
+                [compareWith]="compareSupplier"
+                required
+                #supplier="ngModel"
+                [class.is-invalid]="supplier.invalid && (supplier.dirty || supplier.touched)">
+                <option [ngValue]="null" disabled>Select Supplier</option>
+                <option *ngFor="let supplier of suppliers" [ngValue]="supplier">
+                  {{ supplier.name }} - {{ supplier.contactEmail }}
+                </option>
+              </select>
+              <div *ngIf="supplier.invalid && (supplier.dirty || supplier.touched)" class="invalid-feedback">
+                Please select a supplier
+              </div>
+            </div>
+
+            <!-- Store Selection -->
+            <div class="mb-3">
+              <label for="store" class="form-label">
+                Store <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="store"
+                [(ngModel)]="purchase.store"
+                name="store"
+                [compareWith]="compareStore"
+                required
+                #store="ngModel"
+                [class.is-invalid]="store.invalid && (store.dirty || store.touched)">
+                <option [ngValue]="null" disabled>Select Store</option>
+                <option *ngFor="let store of stores" [ngValue]="store">
+                  {{ store.name }}
+                </option>
+              </select>
+              <div *ngIf="store.invalid && (store.dirty || store.touched)" class="invalid-feedback">
+                Please select a store
+              </div>
+            </div>
+
+            <!-- Quantity and Price -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="quantity" class="form-label">
+                    Quantity <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="quantity"
+                    [(ngModel)]="purchase.quantity"
+                    name="quantity"
+                    min="1"
+                    required
+                    #quantity="ngModel"
+                    [class.is-invalid]="quantity.invalid && (quantity.dirty || quantity.touched)">
+                  
+                  <div *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)" class="invalid-feedback">
+                    <div *ngIf="quantity.errors?.['required']">Quantity is required</div>
+                    <div *ngIf="quantity.errors?.['min']">Quantity must be at least 1</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="price" class="form-label">
+                    Unit Price <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="price"
+                      [(ngModel)]="purchase.price"
+                      name="price"
+                      min="0"
+                      step="0.01"
+                      required
+                      #price="ngModel"
+                      [class.is-invalid]="price.invalid && (price.dirty || price.touched)">
+                  </div>
+                  
+                  <div *ngIf="price.invalid && (price.dirty || price.touched)" class="invalid-feedback">
+                    <div *ngIf="price.errors?.['required']">Price is required</div>
+                    <div *ngIf="price.errors?.['min']">Price cannot be negative</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="mb-3">
+              <div class="card bg-light">
+                <div class="card-body text-center">
+                  <h6 class="card-title mb-1">Total Cost</h6>
+                  <h4 class="text-primary mb-0">{{ calculateTotal() | currency:'USD':'symbol':'1.2-2' }}</h4>
+                  <small class="text-muted">
+                    {{ purchase.quantity }} units × {{ purchase.price | currency:'USD':'symbol':'1.2-2' }}
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Purchase Date -->
+            <div class="mb-3">
+              <label for="purchaseDate" class="form-label">
+                Purchase Date <span class="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                class="form-control"
+                id="purchaseDate"
+                [ngModel]="purchase.purchaseDate | date:'yyyy-MM-dd'"
+                (ngModelChange)="purchase.purchaseDate = $event"
+                name="purchaseDate"
+                required
+                #purchaseDate="ngModel"
+                [class.is-invalid]="purchaseDate.invalid && (purchaseDate.dirty || purchaseDate.touched)">
+              
+              <div *ngIf="purchaseDate.invalid && (purchaseDate.dirty || purchaseDate.touched)" class="invalid-feedback">
+                Please select a purchase date
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <label for="description" class="form-label">Description (Optional)</label>
+              <textarea
+                class="form-control"
+                id="description"
+                [(ngModel)]="purchase.description"
+                name="description"
+                placeholder="Add any notes about this purchase..."
+                rows="3"
+                maxlength="500"></textarea>
+              
+              <div class="form-text">
+                {{ purchase.description?.length || 0 }}/500 characters
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex gap-2 justify-content-end">
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary" 
+                (click)="cancel()"
+                [disabled]="loading">
+                <i class="fas fa-times me-1"></i>Cancel
+              </button>
+              
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="loading || purchaseForm.invalid">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="fas fa-save me-1" *ngIf="!loading"></i>
+                {{ isEditMode ? 'Update' : 'Record' }} Purchase
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Help Text -->
+      <div class="mt-3">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-info-circle me-2"></i>About Purchases
+            </h6>
+            <p class="card-text small mb-0">
+              Recording purchases helps track your inventory costs and supplier relationships. The system will automatically update product quantities when a purchase is recorded.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

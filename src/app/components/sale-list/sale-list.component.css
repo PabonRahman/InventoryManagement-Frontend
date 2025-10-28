@@ -1,0 +1,152 @@
+/* Table styling */
+.table th {
+  border-top: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Button group styling */
+.btn-group-sm > .btn {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+/* Hover effects */
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.04);
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* Loading animation */
+.spinner-border {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Summary cards styling */
+.card.bg-primary,
+.card.bg-success,
+.card.bg-info {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card.bg-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.card.bg-success {
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%) !important;
+}
+
+.card.bg-info {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%) !important;
+  color: #2c3e50 !important;
+}
+
+.card.bg-info .card-title {
+  color: #2c3e50 !important;
+}
+
+/* Quick date filter buttons */
+.btn-group .btn {
+  border-radius: 0.375rem;
+  margin: 0 2px;
+  font-size: 0.875rem;
+}
+
+/* Pagination styling */
+.pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+}
+
+.pagination .page-link {
+  color: #667eea;
+  border: 1px solid #dee2e6;
+  margin: 0 2px;
+  border-radius: 0.375rem;
+}
+
+.pagination .page-link:hover {
+  color: #5a6fd8;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+/* Empty state styling */
+.text-muted i {
+  opacity: 0.3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .btn-group {
+    display: flex;
+  }
+  
+  .summary-cards .col-md-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  
+  .card-header h5 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Date range input group */
+.input-group-text {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+  font-size: 0.875rem;
+}
+
+/* Action button hover effects */
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+/* Ensure proper text alignment */
+.text-center {
+  text-align: center;
+}
+
+.align-middle {
+  vertical-align: middle;
+}

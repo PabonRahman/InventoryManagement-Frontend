@@ -1,0 +1,186 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-truck me-2"></i>
+            {{ isEditMode ? 'Edit Supplier' : 'Add New Supplier' }}
+          </h3>
+        </div>
+        
+        <div class="card-body">
+          <!-- Loading Spinner -->
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">
+              {{ isEditMode ? 'Loading supplier...' : 'Creating supplier...' }}
+            </p>
+          </div>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage && !loading" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="clearError()" aria-label="Close"></button>
+          </div>
+
+          <!-- Success Message -->
+          <div *ngIf="successMessage && !loading" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ successMessage }}
+            <button type="button" class="btn-close" (click)="clearSuccess()" aria-label="Close"></button>
+          </div>
+
+          <form *ngIf="!loading" (ngSubmit)="saveSupplier()" #supplierForm="ngForm">
+            <!-- Supplier Name -->
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                Supplier Name <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                class="form-control"
+                name="name"
+                placeholder="Enter supplier name"
+                [(ngModel)]="supplier.name"
+                required
+                minlength="2"
+                maxlength="100"
+                [class.is-invalid]="isFieldInvalid('name')"
+                (input)="clearError()">
+              <div *ngIf="isFieldInvalid('name')" class="invalid-feedback">
+                {{ getFieldError('name') }}
+              </div>
+            </div>
+
+            <!-- Contact Email -->
+            <div class="mb-3">
+              <label for="contactEmail" class="form-label">
+                Contact Email <span class="text-danger">*</span>
+              </label>
+              <input
+                type="email"
+                id="contactEmail"
+                class="form-control"
+                name="contactEmail"
+                placeholder="Enter contact email"
+                [(ngModel)]="supplier.contactEmail"
+                required
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                [class.is-invalid]="isFieldInvalid('contactEmail')"
+                (input)="clearError()">
+              <div *ngIf="isFieldInvalid('contactEmail')" class="invalid-feedback">
+                {{ getFieldError('contactEmail') }}
+              </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="mb-3">
+              <label for="phone" class="form-label">
+                Phone Number <span class="text-danger">*</span>
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                class="form-control"
+                name="phone"
+                placeholder="Enter phone number"
+                [(ngModel)]="supplier.phone"
+                required
+                minlength="10"
+                maxlength="15"
+                pattern="^[\+]?[0-9\s\-\(\)]{10,15}$"
+                [class.is-invalid]="isFieldInvalid('phone')"
+                (input)="clearError()">
+              <div *ngIf="isFieldInvalid('phone')" class="invalid-feedback">
+                {{ getFieldError('phone') }}
+              </div>
+              <div class="form-text">Format: +1234567890 or 123-456-7890</div>
+            </div>
+
+            <!-- Address -->
+            <div class="mb-4">
+              <label for="address" class="form-label">
+                Address <span class="text-danger">*</span>
+              </label>
+              <textarea
+                id="address"
+                class="form-control"
+                name="address"
+                placeholder="Enter supplier address"
+                [(ngModel)]="supplier.address"
+                required
+                minlength="5"
+                maxlength="255"
+                rows="3"
+                [class.is-invalid]="isFieldInvalid('address')"
+                (input)="clearError()"></textarea>
+              <div class="d-flex justify-content-between align-items-center mt-1">
+                <div *ngIf="isFieldInvalid('address')" class="invalid-feedback d-block">
+                  {{ getFieldError('address') }}
+                </div>
+                <div class="form-text ms-auto">
+                  {{ supplier.address?.length || 0 }}/255 characters
+                </div>
+              </div>
+            </div>
+
+            <!-- Product Count (Display only in edit mode) -->
+            <div *ngIf="isEditMode && supplier.productCount !== undefined" class="mb-3">
+              <div class="alert alert-info">
+                <i class="fas fa-box me-2"></i>
+                This supplier has {{ supplier.productCount }} 
+                {{ supplier.productCount === 1 ? 'product' : 'products' }} associated with them.
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary" 
+                (click)="cancel()"
+                [disabled]="loading">
+                <i class="fas fa-times me-1"></i>Cancel
+              </button>
+              
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="loading || supplierForm.invalid">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="fas fa-save me-1" *ngIf="!loading"></i>
+                {{ isEditMode ? 'Update' : 'Create' }} Supplier
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Help Section -->
+      <div class="mt-3">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-info-circle me-2"></i>About Suppliers
+            </h6>
+            <p class="card-text small mb-2">
+              Suppliers are companies or individuals that provide products to your inventory. 
+              Maintaining accurate supplier information helps with:
+            </p>
+            <ul class="small mb-0">
+              <li>Inventory management and tracking</li>
+              <li>Purchase order processing</li>
+              <li>Supply chain optimization</li>
+              <li>Vendor relationship management</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

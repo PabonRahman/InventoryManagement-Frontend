@@ -1,0 +1,178 @@
+<div class="container-fluid mt-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Product Management</h2>
+        <button class="btn btn-primary" (click)="addNewProduct()">
+          <i class="fas fa-plus me-2"></i>Add New Product
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Filters & Search</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <!-- Search -->
+        <div class="col-md-3">
+          <label for="search" class="form-label">Search Products</label>
+          <input type="text" class="form-control" id="search" placeholder="Search by name, description..."
+            [(ngModel)]="searchTerm" (input)="onSearchChange()">
+        </div>
+
+        <!-- Category Filter -->
+        <div class="col-md-2">
+          <label for="category" class="form-label">Category</label>
+          <select class="form-select" id="category" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+            <option value="all">All Categories</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Supplier Filter -->
+        <div class="col-md-2">
+          <label for="supplier" class="form-label">Supplier</label>
+          <select class="form-select" id="supplier" [(ngModel)]="selectedSupplier" (change)="onFilterChange()">
+            <option value="all">All Suppliers</option>
+            <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+              {{ supplier.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Store Filter -->
+        <div class="col-md-2">
+          <label for="store" class="form-label">Store</label>
+          <select class="form-select" id="store" [(ngModel)]="selectedStore" (change)="onFilterChange()">
+            <option value="all">All Stores</option>
+            <option *ngFor="let store of stores" [value]="store.id">
+              {{ store.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Clear Filters -->
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+            <i class="fas fa-times me-2"></i>Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Loading products...</p>
+  </div>
+
+  <!-- Products Table -->
+  <div *ngIf="!loading" class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Products ({{ filteredProducts.length }})</h5>
+      <small class="text-muted">Showing {{ paginatedProducts.length }} of {{ totalItems }}</small>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th width="80">Image</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Supplier</th>
+              <th>Store</th>
+              <th class="text-center">Price</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-center">Status</th>
+              <th width="150" class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of paginatedProducts" class="align-middle">
+              <td>
+                <img [src]="getImageUrl(product)" 
+                [alt]="product.name" class="product-image"
+                  >
+
+              </td>
+              <td>
+                <div class="fw-semibold">{{ product.name }}</div>
+                <small class="text-muted">{{ product.description | slice:0:50 }}{{ product.description.length > 50 ?
+                  '...' : '' }}</small>
+              </td>
+              <td><span class="badge bg-light text-dark">{{ product.categoryName }}</span></td>
+              <td><small>{{ product.supplierName }}</small></td>
+              <td><span class="badge bg-info">{{ product.storeName }}</span></td>
+              <td class="text-center"><strong class="text-success">{{ product.price | currency:'USD':'symbol':'1.2-2'
+                  }}</strong></td>
+              <td class="text-center"><span [class.fw-bold]="product.quantity < 10">{{ product.quantity }}</span></td>
+              <td class="text-center">
+                <span [class]="getStockStatus(product).class + ' badge'">{{ getStockStatus(product).text }}</span>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-primary" (click)="viewProduct(product)" title="View Product"><i
+                      class="fas fa-eye"></i></button>
+                  <button class="btn btn-outline-warning" (click)="editProduct(product)" title="Edit Product"><i
+                      class="fas fa-edit"></i></button>
+                  <button class="btn btn-outline-danger" (click)="deleteProduct(product)"
+                    [disabled]="deleting && deleteProductId === product.id" title="Delete Product">
+                    <span *ngIf="deleting && deleteProductId === product.id"
+                      class="spinner-border spinner-border-sm me-1"></span>
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Empty State -->
+            <tr *ngIf="filteredProducts.length === 0">
+              <td colspan="9" class="text-center py-4">
+                <div class="text-muted">
+                  <i class="fas fa-box-open fa-3x mb-3"></i>
+                  <h5>No products found</h5>
+                  <p
+                    *ngIf="searchTerm || selectedCategory !== 'all' || selectedSupplier !== 'all' || selectedStore !== 'all'">
+                    Try adjusting your filters or search terms.
+                  </p>
+                  <p
+                    *ngIf="!searchTerm && selectedCategory === 'all' && selectedSupplier === 'all' && selectedStore === 'all'">
+                    No products available. <a href="javascript:void(0)" (click)="addNewProduct()">Add your first
+                      product</a>.
+                  </p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="card-footer">
+      <nav aria-label="Product pagination">
+        <ul class="pagination justify-content-center mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage - 1)">Previous</a>
+          </li>
+          <li *ngFor="let page of pages" class="page-item" [class.active]="page === currentPage">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

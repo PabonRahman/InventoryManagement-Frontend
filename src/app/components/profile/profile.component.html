@@ -1,0 +1,268 @@
+<div class="profile-container">
+  <div class="container">
+    <!-- Header -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="h2 mb-1">User Profile</h1>
+            <p class="text-muted mb-0">Manage your account settings and preferences</p>
+          </div>
+          <button class="btn btn-outline-primary" (click)="exportUserData()" [disabled]="loading">
+            <i class="fas fa-download me-2"></i>Export Data
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Left Column - Profile Information -->
+      <div class="col-lg-4 mb-4">
+        <!-- Profile Card -->
+        <div class="card profile-card shadow-sm mb-4">
+          <div class="card-body text-center p-4">
+            <!-- Avatar -->
+            <div class="avatar-section mb-4">
+              <div class="avatar-circle {{ getAvatarColor(currentUser?.username) }} text-white mx-auto mb-3">
+                <span class="avatar-initials h3 mb-0">{{ getInitials(currentUser?.username) }}</span>
+              </div>
+              <h3 class="h4 mb-1">{{ currentUser?.username }}</h3>
+              <p class="text-muted mb-3">{{ currentUser?.email }}</p>
+              
+              <!-- Roles -->
+              <div class="roles-display">
+                <span *ngFor="let role of currentUser?.roles" 
+                      class="badge {{ getRoleBadgeClass(role) }} me-1 mb-1">
+                  {{ getRoleDisplay(role) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- User Stats -->
+            <div class="user-stats row text-center">
+              <div class="col-4">
+                <div class="stat-item">
+                  <div class="stat-number text-primary">{{ userStats.totalProducts }}</div>
+                  <div class="stat-label">Products</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-item">
+                  <div class="stat-number text-success">{{ userStats.totalPurchases }}</div>
+                  <div class="stat-label">Purchases</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-item">
+                  <div class="stat-number text-info">{{ userStats.totalSales }}</div>
+                  <div class="stat-label">Sales</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer bg-transparent">
+            <small class="text-muted">
+              <i class="fas fa-clock me-1"></i>
+              Last login: {{ userStats.lastLogin }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card quick-actions-card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-primary btn-sm text-start" (click)="toggleChangePassword()">
+                <i class="fas fa-key me-2"></i>Change Password
+              </button>
+              <button class="btn btn-outline-info btn-sm text-start" (click)="toggleEdit()">
+                <i class="fas fa-edit me-2"></i>
+                {{ isEditing ? 'Cancel Edit' : 'Edit Profile' }}
+              </button>
+              <a routerLink="/user-dashboard" class="btn btn-outline-success btn-sm text-start">
+                <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Forms and Activity -->
+      <div class="col-lg-8">
+        <!-- Success Message -->
+        <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="fas fa-check-circle me-2"></i>{{ success }}
+          <button type="button" class="btn-close" (click)="success = ''"></button>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+          <button type="button" class="btn-close" (click)="error = ''"></button>
+        </div>
+
+        <!-- Profile Information Form -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-user-circle me-2 text-primary"></i>Profile Information</h5>
+            <span class="badge bg-light text-dark" [class.bg-warning]="isEditing">
+              {{ isEditing ? 'Editing' : 'View Only' }}
+            </span>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()" *ngIf="!showChangePassword">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Username</label>
+                  <input type="text" class="form-control" formControlName="username" readonly>
+                  <div class="form-text">Username cannot be changed</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" class="form-control" 
+                         [class.is-invalid]="submitted && f['email'].errors"
+                         formControlName="email">
+                  <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                    <div *ngIf="f['email'].errors['required']">Email is required</div>
+                    <div *ngIf="f['email'].errors['email']">Please enter a valid email</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">User ID</label>
+                  <input type="text" class="form-control" [value]="currentUser?.id" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Account Created</label>
+                  <input type="text" class="form-control" value="Recently" readonly>
+                </div>
+              </div>
+
+              <!-- Edit Actions -->
+              <div class="row" *ngIf="isEditing">
+                <div class="col-12">
+                  <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success" [disabled]="loading">
+                      <i class="fas fa-save me-2"></i>
+                      {{ loading ? 'Saving...' : 'Save Changes' }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="toggleEdit()" [disabled]="loading">
+                      <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- Change Password Form -->
+            <form [formGroup]="profileForm" (ngSubmit)="onPasswordSubmit()" *ngIf="showChangePassword">
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <label class="form-label">Current Password</label>
+                  <div class="input-group">
+                    <input [type]="showCurrentPassword ? 'text' : 'password'" 
+                           class="form-control"
+                           formControlName="currentPassword"
+                           placeholder="Enter current password">
+                    <button class="btn btn-outline-secondary" type="button"
+                            (click)="togglePasswordVisibility('current')">
+                      <i class="fas" [class.fa-eye]="!showCurrentPassword" [class.fa-eye-slash]="showCurrentPassword"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">New Password</label>
+                  <div class="input-group">
+                    <input [type]="showNewPassword ? 'text' : 'password'" 
+                           class="form-control"
+                           [class.is-invalid]="submitted && f['newPassword'].errors"
+                           formControlName="newPassword"
+                           placeholder="Enter new password">
+                    <button class="btn btn-outline-secondary" type="button"
+                            (click)="togglePasswordVisibility('new')">
+                      <i class="fas" [class.fa-eye]="!showNewPassword" [class.fa-eye-slash]="showNewPassword"></i>
+                    </button>
+                  </div>
+                  <div *ngIf="submitted && f['newPassword'].errors" class="invalid-feedback d-block">
+                    <div *ngIf="f['newPassword'].errors['minlength']">
+                      Password must be at least 6 characters
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Confirm New Password</label>
+                  <div class="input-group">
+                    <input [type]="showConfirmPassword ? 'text' : 'password'" 
+                           class="form-control"
+                           [class.is-invalid]="submitted && f['confirmPassword'].errors"
+                           formControlName="confirmPassword"
+                           placeholder="Confirm new password">
+                    <button class="btn btn-outline-secondary" type="button"
+                            (click)="togglePasswordVisibility('confirm')">
+                      <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+                    </button>
+                  </div>
+                  <div *ngIf="submitted && f['confirmPassword'].errors" class="invalid-feedback d-block">
+                    <div *ngIf="f['confirmPassword'].errors['mustMatch']">
+                      Passwords do not match
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success" [disabled]="loading">
+                      <i class="fas fa-key me-2"></i>
+                      {{ loading ? 'Updating...' : 'Update Password' }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="toggleChangePassword()" [disabled]="loading">
+                      <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-history me-2 text-info"></i>Recent Activity</h5>
+          </div>
+          <div class="card-body">
+            <div class="activity-timeline">
+              <div *ngFor="let activity of recentActivity" class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas {{ activity.icon }} text-{{ activity.color }}"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-action">{{ activity.action }}</div>
+                  <div class="activity-time text-muted">
+                    {{ getActivityTime(activity.timestamp) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="text-center mt-3">
+              <button class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-list me-1"></i>View Full Activity Log
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

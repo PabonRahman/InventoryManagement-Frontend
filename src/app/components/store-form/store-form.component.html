@@ -1,0 +1,190 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-store me-2"></i>
+            {{ isEditMode ? 'Edit Store' : 'Add New Store' }}
+          </h3>
+        </div>
+        
+        <div class="card-body">
+          <!-- Loading State -->
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 mb-0 text-muted">
+              {{ isEditMode ? 'Loading store details...' : 'Creating store...' }}
+            </p>
+          </div>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage && !loading" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="clearError()" aria-label="Close"></button>
+          </div>
+
+          <form *ngIf="!loading" (ngSubmit)="saveStore()" #storeForm="ngForm">
+            <!-- Store Name -->
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                Store Name <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                [(ngModel)]="store.name"
+                name="name"
+                placeholder="Enter store name"
+                required
+                minlength="2"
+                maxlength="100"
+                (input)="clearError()"
+                #name="ngModel"
+                [class.is-invalid]="name.invalid && (name.dirty || name.touched)"
+                [attr.disabled]="loading ? true : null">
+              
+              <div *ngIf="name.invalid && (name.dirty || name.touched)" class="invalid-feedback">
+                <div *ngIf="name.errors?.['required']">Store name is required</div>
+                <div *ngIf="name.errors?.['minlength']">
+                  Store name must be at least 2 characters long
+                </div>
+                <div *ngIf="name.errors?.['maxlength']">
+                  Store name cannot exceed 100 characters
+                </div>
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <textarea
+                class="form-control"
+                id="address"
+                [(ngModel)]="store.address"
+                name="address"
+                placeholder="Enter store address"
+                rows="3"
+                maxlength="255"
+                #address="ngModel"
+                [attr.disabled]="loading ? true : null"></textarea>
+              
+              <div class="form-text">
+                {{ (store.address?.length || 0) }}/255 characters
+              </div>
+            </div>
+
+            <!-- Contact Number -->
+            <div class="mb-3">
+              <label for="contactNumber" class="form-label">Contact Number</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="contactNumber"
+                [(ngModel)]="store.contactNumber"
+                name="contactNumber"
+                placeholder="Enter contact number"
+                maxlength="20"
+                (input)="clearError()"
+                #contactNumber="ngModel"
+                [class.is-invalid]="contactNumber.invalid && (contactNumber.dirty || contactNumber.touched)"
+                [attr.disabled]="loading ? true : null">
+              
+              <div *ngIf="contactNumber.invalid && (contactNumber.dirty || contactNumber.touched)" class="invalid-feedback">
+                Please enter a valid phone number
+              </div>
+            </div>
+
+            <!-- Store Status (Only in edit mode) -->
+            <div *ngIf="isEditMode" class="mb-4">
+              <label class="form-label">Store Status</label>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isActive"
+                  [(ngModel)]="store.isActive"
+                  name="isActive"
+                  (change)="toggleStoreStatus()"
+                  [attr.disabled]="loading ? true : null">
+                <label class="form-check-label" for="isActive">
+                  {{ store.isActive ? 'Active' : 'Inactive' }}
+                </label>
+              </div>
+              <div class="form-text">
+                Inactive stores won't appear in dropdowns for new products, purchases, or sales.
+              </div>
+            </div>
+
+            <!-- Store Statistics (Edit Mode Only) -->
+            <div *ngIf="isEditMode" class="mb-4 p-3 bg-light rounded">
+              <h6 class="mb-3">
+                <i class="fas fa-chart-bar me-2"></i>Store Statistics
+              </h6>
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="stat-item">
+                    <div class="stat-number text-primary">{{ productCount }}</div>
+                    <div class="stat-label small text-muted">Products</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stat-item">
+                    <div class="stat-number text-success">{{ purchaseCount }}</div>
+                    <div class="stat-label small text-muted">Purchases</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stat-item">
+                    <div class="stat-number text-info">{{ saleCount }}</div>
+                    <div class="stat-label small text-muted">Sales</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary" 
+                (click)="cancel()"
+                [disabled]="loading">
+                <i class="fas fa-times me-1"></i>Cancel
+              </button>
+              
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="loading || storeForm.invalid">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="fas fa-save me-1" *ngIf="!loading"></i>
+                {{ isEditMode ? 'Update' : 'Create' }} Store
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Help Text -->
+      <div class="mt-3">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-info-circle me-2"></i>About Stores
+            </h6>
+            <p class="card-text small mb-0">
+              Stores represent different physical locations or branches in your inventory system. 
+              Each product, purchase, and sale is associated with a specific store.
+              {{ isEditMode ? 'You can deactivate a store to hide it from selection in new transactions.' : '' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

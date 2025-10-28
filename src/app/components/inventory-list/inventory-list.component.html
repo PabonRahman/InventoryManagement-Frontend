@@ -1,0 +1,26 @@
+<h2>Inventory</h2>
+<a routerLink="/inventories/new" class="btn btn-primary mb-2">Add Inventory</a>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Store</th>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Cost Price</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let inv of inventories">
+      <td>{{ inv.store.name }}</td>
+      <td>{{ inv.product.name }}</td>
+      <td>{{ inv.quantity }}</td>
+      <td>{{ inv.costPrice }}</td>
+      <td>
+        <button class="btn btn-sm btn-info me-2" (click)="editInventory(inv.id!)">Edit</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteInventory(inv.id!)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

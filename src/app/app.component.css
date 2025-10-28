@@ -1,0 +1,140 @@
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.sidebar .nav-link {
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 5px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  color: #ecf0f1 !important;
+  text-decoration: none;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateX(5px);
+  color: #ffffff !important;
+}
+
+.sidebar .nav-link.active {
+  background-color: #3498db;
+  border-color: #2980b9;
+  font-weight: bold;
+  color: #ffffff !important;
+}
+
+.sidebar .nav-link.text-danger:hover {
+  background-color: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.sidebar .nav-link.text-warning:hover {
+  background-color: rgba(243, 156, 18, 0.2);
+  border-color: rgba(243, 156, 18, 0.3);
+}
+
+/* Section Headers */
+.nav-section-header {
+  padding: 10px 15px 5px 15px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #95a5a6;
+  font-weight: bold;
+  margin-top: 15px;
+  border-bottom: 1px solid #4a5f7a;
+}
+
+/* Badge Styles */
+.badge-sm {
+  font-size: 0.6em;
+  padding: 3px 6px;
+}
+
+/* Main Content */
+.content {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+}
+
+.content-full {
+  margin-left: 0 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .content {
+    margin-left: 0;
+  }
+}
+
+/* Custom Scrollbar for Sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+/* Navbar Styles */
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Content Area */
+.p-4 {
+  padding: 2rem !important;
+}
+
+/* Role-based visual cues */
+.nav-link.text-warning {
+  color: #f39c12 !important;
+}
+
+.nav-link.text-danger {
+  color: #e74c3c !important;
+}
+
+/* Disabled state for unauthorized items */
+.nav-link.disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.nav-link.disabled:hover {
+  transform: none !important;
+  background-color: transparent !important;
+}
