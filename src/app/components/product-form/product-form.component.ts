@@ -28,7 +28,8 @@ export class ProductFormComponent implements OnInit {
     storeId: undefined,
     categoryName: undefined,
     supplierName: undefined,
-    storeName: undefined
+    storeName: undefined,
+    category: undefined
   };
 
   categories: Category[] = [];

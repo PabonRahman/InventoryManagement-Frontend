@@ -1,5 +1,6 @@
 // models/product.ts - MINIMAL VERSION
 export interface Product {
+category: any;
   categoryName: any;
   supplierName: any;
   storeName: any;

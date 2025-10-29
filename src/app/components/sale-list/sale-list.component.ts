@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TrackByFunction } from '@angular/core';
 import { Router } from '@angular/router';
 import { SaleResponse } from '../../models/sale-response';
 import { Product } from '../../models/product';
@@ -31,18 +31,24 @@ export class SaleListComponent implements OnInit {
   pageSize = 10;
   totalItems = 0;
 
+  // Proper trackBy function for ngFor
+  // TrackBy functions
+trackByProductId: TrackByFunction<Product> = (index, item) => item.id;
+trackByStoreId: TrackByFunction<Store> = (index, item) => item.id;
+trackBySaleId: TrackByFunction<SaleResponse> = (index, item) => item.id!;
+trackByPage: TrackByFunction<number> = (index, item) => item;
+
   constructor(
     private saleService: SaleService,
     private productService: ProductService,
     private storeService: StoreService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadInitialData();
   }
 
-  // Load initial sales, products, stores
   loadInitialData(): void {
     this.loading = true;
 
@@ -67,29 +73,27 @@ export class SaleListComponent implements OnInit {
       });
   }
 
-  // Filters
   applyFilters(): void {
     let filtered = this.sales;
 
-    // Search
+    // Search filter
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(sale =>
-        sale.product?.name?.toLowerCase().includes(term) ||
-        sale.store?.name?.toLowerCase().includes(term) ||
-        (sale.description && sale.description.toLowerCase().includes(term)) ||
-        (sale.customerName && sale.customerName.toLowerCase().includes(term))
+        sale.productName.toLowerCase().includes(term) ||
+        sale.storeName.toLowerCase().includes(term) ||
+        (sale.description && sale.description.toLowerCase().includes(term))
       );
     }
 
     // Product filter
     if (this.selectedProduct !== 'all') {
-      filtered = filtered.filter(sale => sale.product?.id === Number(this.selectedProduct));
+      filtered = filtered.filter(sale => sale.productName === this.selectedProduct);
     }
 
     // Store filter
     if (this.selectedStore !== 'all') {
-      filtered = filtered.filter(sale => sale.store?.id === Number(this.selectedStore));
+      filtered = filtered.filter(sale => sale.storeName === this.selectedStore);
     }
 
     // Date range filter
@@ -160,14 +164,14 @@ export class SaleListComponent implements OnInit {
     if (page >= 1 && page <= this.totalPages) this.currentPage = page;
   }
 
-  // CRUD
+  // CRUD operations
   addNewSale() { this.router.navigate(['/sales/new']); }
   editSale(sale: SaleResponse) { if (sale.id) this.router.navigate(['/sales/edit', sale.id]); }
   viewSale(sale: SaleResponse) { if (sale.id) this.router.navigate(['/sales/view', sale.id]); }
 
   deleteSale(sale: SaleResponse): void {
     if (!sale.id) return;
-    if (!confirm(`Delete sale of "${sale.product?.name}"?`)) return;
+    if (!confirm(`Delete sale of "${sale.productName}"?`)) return;
 
     this.deleting = true;
     this.deleteSaleId = sale.id;

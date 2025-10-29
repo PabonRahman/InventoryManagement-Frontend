@@ -25,8 +25,8 @@
               <select
                 class="form-select"
                 id="product"
-                [ngModel]="sale.product"
-                (ngModelChange)="sale.product = $event; onProductChange()"
+                [(ngModel)]="sale.product"
+                (ngModelChange)="onProductChange($event)"
                 name="product"
                 [compareWith]="compareProduct"
                 required
@@ -49,8 +49,8 @@
               <select
                 class="form-select"
                 id="store"
-                [ngModel]="sale.store"
-                (ngModelChange)="sale.store = $event"
+                [(ngModel)]="sale.store"
+                (ngModelChange)="onStoreChange($event)"
                 name="store"
                 [compareWith]="compareStore"
                 required
@@ -75,8 +75,7 @@
                     type="number"
                     class="form-control"
                     id="quantity"
-                    [ngModel]="sale.quantity"
-                    (ngModelChange)="sale.quantity = $event"
+                    [(ngModel)]="sale.quantity"
                     name="quantity"
                     min="1"
                     [max]="sale.product?.quantity || 0"
@@ -103,10 +102,9 @@
                       type="number"
                       class="form-control"
                       id="price"
-                      [ngModel]="sale.price"
-                      (ngModelChange)="sale.price = $event"
+                      [(ngModel)]="sale.price"
                       name="price"
-                      min="0"
+                      min="0.01"
                       step="0.01"
                       required
                       #price="ngModel"
@@ -117,7 +115,7 @@
                   </div>
                   <div *ngIf="price.invalid && (price.dirty || price.touched)" class="invalid-feedback">
                     <div *ngIf="price.errors?.['required']">Price is required</div>
-                    <div *ngIf="price.errors?.['min']">Price cannot be negative</div>
+                    <div *ngIf="price.errors?.['min']">Price must be at least $0.01</div>
                   </div>
                 </div>
               </div>
@@ -129,7 +127,9 @@
                 <div class="card-body">
                   <h6 class="card-title mb-1">Total Amount</h6>
                   <h4 class="text-success mb-0">{{ calculateTotal() | currency:'USD':'symbol':'1.2-2' }}</h4>
-                  <small class="text-muted">{{ sale.quantity }} × {{ sale.price | currency:'USD':'symbol':'1.2-2' }}</small>
+                  <small class="text-muted">
+                    {{ (sale.quantity || 0) }} × {{ (sale.price || 0) | currency:'USD':'symbol':'1.2-2' }}
+                  </small>
                 </div>
               </div>
             </div>
@@ -157,8 +157,7 @@
               <textarea
                 class="form-control"
                 id="description"
-                [ngModel]="sale.description"
-                (ngModelChange)="sale.description = $event"
+                [(ngModel)]="sale.description"
                 name="description"
                 rows="3"
                 maxlength="500"

@@ -1,9 +1,9 @@
 export interface SaleResponse {
-  product: any;
-  store: any;
-  customerName: any;
+  product: import("c:/Users/User/InventoryManagement-Frontend/src/app/models/product").Product | undefined;
+  store: import("c:/Users/User/InventoryManagement-Frontend/src/app/models/store").Store | undefined;
   id: number;
   productName: string;
+  categoryName: string; // ✅ matches backend
   storeName: string;
   quantity: number;
   price: number;
