@@ -1,9 +1,12 @@
+import type { Product } from "./product";
+import type { Store } from "./store";
+
 export interface SaleResponse {
-  product: import("c:/Users/User/InventoryManagement-Frontend/src/app/models/product").Product | undefined;
-  store: import("c:/Users/User/InventoryManagement-Frontend/src/app/models/store").Store | undefined;
+  product: Product | undefined;
+  store: Store | undefined;
   id: number;
   productName: string;
-  categoryName: string; // ✅ matches backend
+  categoryName: string;
   storeName: string;
   quantity: number;
   price: number;
